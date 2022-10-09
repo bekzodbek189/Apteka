@@ -3,6 +3,19 @@ from io import BytesIO
 import qrcode
 from PIL import Image, ImageDraw
 from django.core.files import File
+from django.contrib.auth.models import AbstractUser
+
+class User(AbstractUser):
+    Status_user = (
+        (1, "Director"),
+        (2, "Omborchi"),
+        (3, "Sotuvchi"),
+        (4, "User")
+    )
+    status = models.SmallIntegerField(default=4, choices=Status_user)
+    phone = models.BigIntegerField(null=True, blank=True)
+
+
 
 class Tablet(models.Model):
     name = models.CharField(max_length=255, unique=True)
@@ -27,11 +40,15 @@ class Tablet(models.Model):
 class In(models.Model):
     product = models.ForeignKey(Tablet, on_delete=models.CASCADE)
     quantity = models.IntegerField()
-    date = models.DateField()
+    date = models.DateField(auto_now_add=True)
+
+
 
 class Order(models.Model):
     product = models.ForeignKey(Tablet, on_delete=models.CASCADE)
     quantity = models.IntegerField()
+
+
 
 class Order_Item(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
